@@ -5,6 +5,7 @@ import urllib.request as u
 import re
 import collections
 import json
+from PIL import Image
 #auth info:
 reddit = praw.Reddit(client_id='FwTAWNvo0KMYAw',
                      client_secret='pTMohyBCYCLlRbshZkBuZMpF0ps',
@@ -12,6 +13,7 @@ reddit = praw.Reddit(client_id='FwTAWNvo0KMYAw',
                      user_agent='photorec by /u/appdev5',
                      username='appdev5')
 
+print("hi")
 def makehash():
     return collections.defaultdict(makehash)
 def findDim(title):
@@ -37,7 +39,24 @@ def saveImage(suburl):
         img[submission.id]["score"] = submission.score
     except Exception:
         print("this url doesn't work properly")
-
+def processImages():
+    res = (1920, 1080)
+    with open("imgs.json", 'r') as json_data:
+        data = json.load(json_data)
+    images = list(data.keys())
+    print("images" + str(images))
+    for img in images:
+        if int(data[img]["length"]) > 1000 and int(data[img]["width"]) > 540:
+            currentImage = Image.open("img/" + img + ".jpg")
+            print(currentImage.size)
+            resizedImage = currentImage.resize(res)
+            data[img]["length"] = 1920
+            data[img]["width"] = 1080
+            with open('imgs.json', 'w') as f:
+                 json.dump(data, f)
+            resizedImage.save("img/" + img + ".jpg")
+            print(currentImage.size)
+            print(resizedImage.size)
 img = makehash()
 subreddit = reddit.subreddit("EarthPorn")
 for submission in subreddit.top(limit=5):
@@ -47,5 +66,6 @@ for submission in subreddit.top(limit=5):
     saveImage(submission.url)
 with open('imgs.json', 'w') as f:
      json.dump(img, f)
-
+print("processing")
+processImages()
 # pprint.pprint(vars(post))
