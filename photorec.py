@@ -28,17 +28,18 @@ def findDim(title):
 def saveImage(suburl):
     if (suburl[:16] == "http://imgur.com"):
         url = "http://i.imgur.com" + suburl[16:] + ".jpg"
-    else:
+    if (suburl[:18] == "http://i.imgur.com" or suburl[:19] == "https://i.imgur.com"
+    or suburl[:14] == "https://i.redd"):
         url = suburl
-    try:
-        u.urlretrieve(url, "img/" + submission.id + ".jpg")
-        l, w = findDim(submission.title)
-        img[submission.id]["length"] = l
-        img[submission.id]["width"] = w
-        img[submission.id]["name"] = submission.title
-        img[submission.id]["score"] = submission.score
-    except Exception:
-        print("this url doesn't work properly")
+        try:
+            u.urlretrieve(url, "img/" + submission.id + ".jpg")
+            l, w = findDim(submission.title)
+            img[submission.id]["length"] = l
+            img[submission.id]["width"] = w
+            img[submission.id]["name"] = submission.title
+            img[submission.id]["score"] = submission.score
+        except Exception:
+            print("this url doesn't work properly")
 def processImages():
     res = (1920, 1080)
     with open("imgs.json", 'r') as json_data:
@@ -46,20 +47,20 @@ def processImages():
     images = list(data.keys())
     print("images" + str(images))
     for img in images:
-        if int(data[img]["length"]) > 1000 and int(data[img]["width"]) > 540:
-            currentImage = Image.open("img/" + img + ".jpg")
-            print(currentImage.size)
-            resizedImage = currentImage.resize(res)
-            data[img]["length"] = 1920
-            data[img]["width"] = 1080
-            with open('imgs.json', 'w') as f:
-                 json.dump(data, f)
-            resizedImage.save("img/" + img + ".jpg")
-            print(currentImage.size)
-            print(resizedImage.size)
+        # if int(data[img]["length"]) > 1000 and int(data[img]["width"]) > 540:
+        currentImage = Image.open("img/" + img + ".jpg")
+        print(currentImage.size)
+        resizedImage = currentImage.resize(res)
+        data[img]["length"] = 1920
+        data[img]["width"] = 1080
+        with open('imgs.json', 'w') as f:
+             json.dump(data, f)
+        resizedImage.save("img/" + img + ".jpg")
+        print(currentImage.size)
+        print(resizedImage.size)
 img = makehash()
 subreddit = reddit.subreddit("EarthPorn")
-for submission in subreddit.top(limit=5):
+for submission in subreddit.top(limit=50):
     toprint = "{} , score={}".format(submission.title, submission.score)
     print(submission.url)
     print(toprint)
