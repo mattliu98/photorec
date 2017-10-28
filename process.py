@@ -9,4 +9,5 @@ class Process():
         if int(data[img]["length"]) > 1000 and int(data[img]["width"]) > 540:
             currentImage = Image.open("img/" + img + ".jpg")
             resizedImage = currentImage.resize(res)
+    #TODO: replace resize algorithm with seam carving algorithm
 p = Process()

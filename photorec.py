@@ -1,15 +1,18 @@
 import praw
 import pprint
 import requests
-import urllib.request as u
+# import urllib.request as u
 import re
 import collections
 import json
+import logging
 from PIL import Image
+
+# This class gets images and corresponding image data from Reddit.
 #auth info:
 reddit = praw.Reddit(client_id='FwTAWNvo0KMYAw',
                      client_secret='pTMohyBCYCLlRbshZkBuZMpF0ps',
-                     password='matt82186',
+                     password='*******',
                      user_agent='photorec by /u/appdev5',
                      username='appdev5')
 
@@ -25,7 +28,7 @@ def findDim(title):
         return length, width
     except AttributeError:
         print("wrong dimensions")
-def saveImage(suburl):
+def saveImage(suburl): #redirect urls
     if (suburl[:16] == "http://imgur.com"):
         url = "http://i.imgur.com" + suburl[16:] + ".jpg"
     if (suburl[:18] == "http://i.imgur.com" or suburl[:19] == "https://i.imgur.com"
@@ -40,7 +43,7 @@ def saveImage(suburl):
             img[submission.id]["score"] = submission.score
         except Exception:
             print("this url doesn't work properly")
-def processImages():
+def processImages(): #resizes images. TODO: replace with functions in process.py
     res = (1920, 1080)
     with open("imgs.json", 'r') as json_data:
         data = json.load(json_data)
@@ -58,6 +61,8 @@ def processImages():
         resizedImage.save("img/" + img + ".jpg")
         print(currentImage.size)
         print(resizedImage.size)
+
+
 img = makehash()
 subreddit = reddit.subreddit("EarthPorn")
 for submission in subreddit.top(limit=50):
@@ -65,7 +70,7 @@ for submission in subreddit.top(limit=50):
     print(submission.url)
     print(toprint)
     saveImage(submission.url)
-with open('imgs.json', 'w') as f:
+with open('imgs.json', 'w') as f: 
      json.dump(img, f)
 print("processing")
 processImages()
