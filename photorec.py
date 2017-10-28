@@ -1,7 +1,7 @@
 import praw
 import pprint
 import requests
-# import urllib.request as u
+import urllib.request as u
 import re
 import collections
 import json
@@ -16,7 +16,6 @@ reddit = praw.Reddit(client_id='FwTAWNvo0KMYAw',
                      user_agent='photorec by /u/appdev5',
                      username='appdev5')
 
-print("hi")
 def makehash():
     return collections.defaultdict(makehash)
 def findDim(title):
@@ -67,10 +66,10 @@ img = makehash()
 subreddit = reddit.subreddit("EarthPorn")
 for submission in subreddit.top(limit=50):
     toprint = "{} , score={}".format(submission.title, submission.score)
-    print(submission.url)
-    print(toprint)
+    # print(submission.url)
+    # print(toprint)
     saveImage(submission.url)
-with open('imgs.json', 'w') as f: 
+with open('imgs.json', 'w') as f:
      json.dump(img, f)
 print("processing")
 processImages()
