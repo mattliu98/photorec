@@ -8,16 +8,18 @@ import json
 import logging
 from PIL import Image
 
-# This class gets images and corresponding image data from Reddit.
+# This class gets images and corresponding image data from Reddit. Replace with your own.
 #auth info:
-reddit = praw.Reddit(client_id='FwTAWNvo0KMYAw',
-                     client_secret='pTMohyBCYCLlRbshZkBuZMpF0ps',
+reddit = praw.Reddit(client_id='**********',
+                     client_secret='****************',
                      password='*******',
-                     user_agent='photorec by /u/appdev5',
-                     username='appdev5')
+                     user_agent='***************',
+                     username='****************')
 
 def makehash():
     return collections.defaultdict(makehash)
+
+#often the dimensions of the image will be posted in the title. finding the dimensions here eliminates having to do so manually
 def findDim(title):
     try:
         parse = re.search("(\[|\()[0-9]{4,5}.+[0-9]{3,4}", title)
@@ -28,7 +30,7 @@ def findDim(title):
     except AttributeError:
         print("wrong dimensions")
 def saveImage(suburl): #redirect urls
-    if (suburl[:16] == "http://imgur.com"):
+    if (suburl[:16] == "http://imgur.com"):#
         url = "http://i.imgur.com" + suburl[16:] + ".jpg"
     if (suburl[:18] == "http://i.imgur.com" or suburl[:19] == "https://i.imgur.com"
     or suburl[:14] == "https://i.redd"):
@@ -73,4 +75,3 @@ with open('imgs.json', 'w') as f:
      json.dump(img, f)
 print("processing")
 processImages()
-# pprint.pprint(vars(post))
